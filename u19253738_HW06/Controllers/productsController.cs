@@ -7,6 +7,8 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using u19253738_HW06.Models;
+using PagedList.Mvc;
+using PagedList;
 
 namespace u19253738_HW06.Controllers
 {
@@ -15,10 +17,10 @@ namespace u19253738_HW06.Controllers
         private BikeStoresEntities db = new BikeStoresEntities();
 
         // GET: products
-        public ActionResult Index()
+        public ActionResult Index(string SearchStr,int? i)
         {
             var products = db.products.Include(p => p.brand).Include(p => p.category);
-            return View(products.ToList());
+            return View(products.Where(x=>x.product_name.Contains(SearchStr) || SearchStr== null).ToList().ToPagedList(i ??1,10));
         }
 
         // GET: products/Details/5
