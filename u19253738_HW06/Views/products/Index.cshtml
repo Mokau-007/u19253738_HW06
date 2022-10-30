@@ -63,8 +63,8 @@
             </td>
             <td>
                 <a onclick="showInPopUp('@Url.Action("Edit","products",new {id=item.product_id })','Edit')" class="btn btn-primary"> Edit</a>|
-                <a onclick="showInPopUp('@Url.Action("Details","products",new {id=item.product_id })','Details')" class="btn btn-primary"> Details</a>|
-                <a onclick="showInPopUp('@Url.Action("Delete","products",new {id=item.product_id })','Delete')" class="btn btn-primary"> Delete</a>
+                <a onclick="showInPopUp('@Url.Action("Details","products",new {id=item.product_id })','Details')" class="btn btn-info"> Details</a>|
+                <a onclick="showInPopUp('@Url.Action("Delete","products",new {id=item.product_id })','Delete')" class="btn btn-danger"> Delete</a>
                 @*@Html.ActionLink("Edit", "Edit", new { id = item.product_id }, new { @class = "btn btn-primary" }, new { @onclick = }) |
                 @Html.ActionLink("Details", "Details", new { id = item.product_id }, new { @class = "details btn btn-info" }) |
                 @Html.ActionLink("Delete", "Delete", new { id = item.product_id }, new { @class = "btn btn-danger" })*@
@@ -108,7 +108,7 @@
             url: url,
             success: function (data) {
                 $("#form-modal .modal-body").html(data);
-                $("#form-modal .modal-title").html(title)
+                $("#form-modal .modal-title").html(title);
                 $("#form-modal").modal('show');
             }
         })
@@ -116,10 +116,34 @@
 
     insertAjaxPost = form => {
         try {
+            $.ajax({
+                type: "POST",
+                url: form.action,
+                data: new FormData(form),
+                contentType: false,
+                processData: false,
+                success: function (data) {
+                    $("#prodTab").html(data.html);
+                    $("#form-modal .modal-body").modal('hide');
+                    //if (data.isValid) {
+                    //    $("#prodTab").html(data.html);
+                    //    $("#form-modal .modal-body").html("");
+                    //    $("#form-modal .modal-title").html("");
+                    //    $("#form-modal .modal-body").modal('hide');
+                    //}
+                    //else
+                    //    $("#form-modal .modal-body").html(data.html);
+                },
+                error: function (err) {
+                    console.log(err);
+                }
+            })
 
         } catch (e) {
+            console.log(e);
 
         }
+        return false;
     }
 
 </script>

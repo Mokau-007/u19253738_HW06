@@ -1,0 +1,131 @@
+﻿@model IPagedList<u19253738_HW06.Models.order_items>
+
+
+
+@{
+    ViewBag.Title = "Index";
+}
+@using PagedList.Mvc;
+@using PagedList;
+
+<h2>Orders</h2>
+
+
+
+@{
+    decimal Total = 0;
+    decimal finalTotal = 0;
+    decimal price = 0;
+    int quant=0;
+    int ordID = 0;
+}
+
+@foreach (var item in Model)
+ {
+    if (ordID != item.order_id)
+    {
+        ordID = item.order_id;
+            <h3>
+                Orders @item.order_id- @item.order.order_date
+            </h3>
+            <table class="table"id="tab" >
+                <tr>
+                    <th>Product Name</th>
+                    <th>List Price</th>
+                    <th>Quantity</th>
+                    <th>Total</th>
+                </tr>
+                @foreach (var itm in Model)
+                {
+                    if(itm.order.order_id== ordID)
+                        {
+                            <tr>
+                                <td>
+                                    @itm.product.product_name
+                                </td>
+                                <td>
+                                    @itm.list_price
+                                </td>
+                                <td>
+                                    @itm.quantity
+                                </td>
+                                <td id="totalAmount">
+                                    @{ 
+                                        quant = itm.quantity;
+                                        price = itm.list_price;
+                                        Total = price * Convert.ToDecimal(quant);
+                                        finalTotal += Total;
+                                    }
+                                    @Total
+                                </td>
+                            </tr>
+                        }
+                    
+                }
+                <tr>
+                    <th></th>
+                    <th></th>
+                    <th>Grand total</th>
+                    <th id="priceSum">@finalTotal</th>
+                </tr>
+             </table>
+             
+                 finalTotal = 0;
+             
+     }
+
+
+
+
+ }
+
+@Html.PagedListPager(Model, i => Url.Action("Index", "Orders", new { i, search = Request.QueryString["search"] }))
+
+
+
+@*<table class="table">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.quantity)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.list_price)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.discount)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.product.product_name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.order.order_id)
+            </th>
+            <th></th>
+        </tr>
+
+    @foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.quantity)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.list_price)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.discount)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.product.product_name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.order.order_id)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+            </td>
+        </tr>
+    }
+
+    </table>*@

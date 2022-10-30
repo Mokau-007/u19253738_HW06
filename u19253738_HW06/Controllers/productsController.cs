@@ -24,18 +24,34 @@ namespace u19253738_HW06.Controllers
         }
 
         // GET: products/Details/5
+        public ActionResult Information(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            //product product = db.products.Find(id);
+            var stock = db.stocks.Where(x => x.product_id == id).Include(y => y.product).Include(y => y.store);
+            if (stock == null)
+            {
+                return HttpNotFound();
+            }
+            return View(stock);
+        }
+
         public ActionResult Details(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            product product = db.products.Find(id);
-            if (product == null)
+            //product product = db.products.Find(id);
+            var stock = db.stocks.Where(x => x.product_id == id).Include(y => y.product).Include(y => y.store);
+            if (stock == null)
             {
                 return HttpNotFound();
             }
-            return View(product);
+            return View(stock);
         }
 
         // GET: products/Create
