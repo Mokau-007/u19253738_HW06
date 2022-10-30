@@ -1,57 +1,126 @@
-﻿@model IEnumerable<u19253738_HW06.Models.product>
+﻿@model IPagedList<u19253738_HW06.Models.product>
 
 @{
     ViewBag.Title = "Index";
 }
 
-<h2>Index</h2>
 
-<p>
-    @Html.ActionLink("Create New", "Create")
-</p>
-<table class="table">
+@using PagedList.Mvc;
+@using PagedList;
+
+<h2>Products</h2>
+
+@using (Html.BeginForm("Index", "products", FormMethod.Get, new { @style = "display:inline" }))
+{
+    @Html.TextBox("SearchStr", "", new { @class = "form-control", @style = "display:inline", @placeholder = "Enter product name" })
+    <input type="submit" value="Search" class="btn btn-primary" />
+
+
+}
+<a onclick="showInPopUp('@Url.Action("Create","products",null)','Create')" class="btn btn-info"> Create</a>
+@*<p>
+        @Html.TextBox("SearchStr", "Enter product name...", new { @class = "form-control", @style = "display:inline" })
+            @Html.ActionLink("Search", "Index", "", new { @class = "btn btn-primary" })
+        @Html.ActionLink("Create New", "Create", "", new { @class = "btn btn-info" })
+    </p>*@
+<table class="table" id="prodTab">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.product_name)
+            @Html.DisplayNameFor(model => model.First().product_name)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.model_year)
+            @Html.DisplayNameFor(model => model.First().model_year)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.list_price)
+            @Html.DisplayNameFor(model => model.First().list_price)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.brand.brand_name)
+            @Html.DisplayNameFor(model => model.First().brand.brand_name)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.category.category_name)
+            @Html.DisplayNameFor(model => model.First().category.category_name)
         </th>
         <th></th>
     </tr>
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.product_name)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.model_year)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.list_price)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.brand.brand_name)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.category.category_name)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.product_id }) |
-            @Html.ActionLink("Details", "Details", new { id=item.product_id }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.product_id })
-        </td>
-    </tr>
-}
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.product_name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.model_year)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.list_price)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.brand.brand_name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.category.category_name)
+            </td>
+            <td>
+                <a onclick="showInPopUp('@Url.Action("Edit","products",new {id=item.product_id })','Edit')" class="btn btn-primary"> Edit</a>|
+                <a onclick="showInPopUp('@Url.Action("Details","products",new {id=item.product_id })','Details')" class="btn btn-primary"> Details</a>|
+                <a onclick="showInPopUp('@Url.Action("Delete","products",new {id=item.product_id })','Delete')" class="btn btn-primary"> Delete</a>
+                @*@Html.ActionLink("Edit", "Edit", new { id = item.product_id }, new { @class = "btn btn-primary" }, new { @onclick = }) |
+                @Html.ActionLink("Details", "Details", new { id = item.product_id }, new { @class = "details btn btn-info" }) |
+                @Html.ActionLink("Delete", "Delete", new { id = item.product_id }, new { @class = "btn btn-danger" })*@
+            </td>
+        </tr>
+    }
 
 </table>
+
+@Html.PagedListPager(Model, i => Url.Action("Index", "products", new { i, search = Request.QueryString["search"] }))
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+
+@*<div class="modal" tabindex="-1" role="dialog" id="form-modal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Modal title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Modal body text goes here.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>*@
+
+<script type="text/javascript">
+    showInPopUp = (url, title) => {
+        $.ajax({
+            type: "GET",
+            url: url,
+            success: function (data) {
+                $("#form-modal .modal-body").html(data);
+                $("#form-modal .modal-title").html(title)
+                $("#form-modal").modal('show');
+            }
+        })
+    }
+
+    insertAjaxPost = form => {
+        try {
+
+        } catch (e) {
+
+        }
+    }
+
+</script>
+
